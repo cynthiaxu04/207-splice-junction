@@ -1,5 +1,5 @@
 ###############################################################################
-'''This src has functions which process the information in the .h5 files
+'''This code has functions which process the information in the .h5 files
 datafile_{}_{}.h5 and convert them into a format usable by Keras.'''
 ###############################################################################
 
@@ -41,8 +41,6 @@ def create_datapoints(seq, strand, tx_start, tx_end, jn_start, jn_end):
     # respectively. It then calls reformat_data and one_hot_encode
     # and returns X, Y which can be used by Keras models.
 
-    # Convert seq from bytestring to string
-    seq = seq.decode('UTF-8')
     seq = 'N'*(CL_max//2) + seq[CL_max//2:-CL_max//2] + 'N'*(CL_max//2)
     # Context being provided on the RNA and not the DNA
 
@@ -55,7 +53,7 @@ def create_datapoints(seq, strand, tx_start, tx_end, jn_start, jn_end):
     jn_start = map(lambda x: map(int, re.split(',', x)[:-1]), jn_start)
     jn_end = map(lambda x: map(int, re.split(',', x)[:-1]), jn_end)
 
-    if strand == b'+':
+    if strand == '+':
 
         X0 = np.asarray(map(int, list(seq)))
         Y0 = [-np.ones(tx_end-tx_start+1) for t in range(1)]
@@ -72,7 +70,7 @@ def create_datapoints(seq, strand, tx_start, tx_end, jn_start, jn_end):
                         Y0[t][c-tx_start] = 1
                     # Ignoring junctions outside annotated tx start/end sites
                      
-    elif strand == b'-':
+    elif strand == '-':
 
         X0 = (5-np.asarray(map(int, list(seq[::-1])))) % 5  # Reverse complement
         Y0 = [-np.ones(tx_end-tx_start+1) for t in range(1)]
@@ -171,8 +169,8 @@ def print_topl_statistics(y_true, y_pred):
 
     auprc = average_precision_score(y_true, y_pred)
 
-    print ("%.4f\t\033[91m%.4f\t\033[0m%.4f\t%.4f\t\033[94m%.4f\t\033[0m"
+    print(("%.4f\t\033[91m%.4f\t\033[0m%.4f\t%.4f\t\033[94m%.4f\t\033[0m"
           + "%.4f\t%.4f\t%.4f\t%.4f\t%d") % (
           topkl_accuracy[0], topkl_accuracy[1], topkl_accuracy[2],
           topkl_accuracy[3], auprc, threshold[0], threshold[1],
-          threshold[2], threshold[3], len(idx_true))
+          threshold[2], threshold[3], len(idx_true)))

@@ -11,7 +11,7 @@ import re
 import sys
 import time
 import h5py
-#from constants import *
+from constants import *
 
 start_time = time.time()
 
@@ -93,7 +93,7 @@ h5f.create_dataset('SEQ', data=np.asarray(SEQ))
 
 h5f.close()
 
-print("--- %s seconds ---" % (time.time() - start_time))
+print "--- %s seconds ---" % (time.time() - start_time)
 
 ###############################################################################
 

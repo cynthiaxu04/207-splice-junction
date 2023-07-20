@@ -2,13 +2,13 @@
 # This file has the functions necessary to create the SpliceAI model.
 ###############################################################################
 
-from keras.models import Model
-from keras.layers import Input
-from keras.layers.core import Activation
-from keras.layers.convolutional import Conv1D, Cropping1D
-from keras.layers.normalization import BatchNormalization
-from keras.layers.merge import add
-import keras.backend as kb
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Activation
+from tensorflow.keras.layers import Conv1D, Cropping1D
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import add
+import tensorflow.keras.backend as kb
 import numpy as np
 
 
@@ -20,10 +20,10 @@ def ResidualUnit(l, w, ar):
 
         bn1 = BatchNormalization()(input_node)
         act1 = Activation('relu')(bn1)
-        conv1 = Conv1D(l, w, dilation_rate=ar, padding='same')(act1)
+        conv1 = Conv1D(l, (w,), dilation_rate=(ar,), padding='same')(act1)
         bn2 = BatchNormalization()(conv1)
         act2 = Activation('relu')(bn2)
-        conv2 = Conv1D(l, w, dilation_rate=ar, padding='same')(act2)
+        conv2 = Conv1D(l, (w,), dilation_rate=(ar,), padding='same')(act2)
         output_node = add([conv2, input_node])
 
         return output_node
@@ -51,15 +51,12 @@ def SpliceAI(L, W, AR):
             # Skip connections to the output after every 4 residual units
             dense = Conv1D(L, 1)(conv)
             skip = add([skip, dense])
-
-    skip = Cropping1D(CL/2)(skip)
-
-    output0 = [[] for t in range(1)]
-
-    for t in range(1):
-        output0[t] = Conv1D(3, 1, activation='softmax')(skip)
+    # Provide cropping before and after the sequence
+    skip = Cropping1D(int(CL/2))(skip)
+    pre_final = BatchNormalization()(skip)
+    final = Conv1D(3, 1, activation='softmax')(pre_final)
     
-    model = Model(inputs=input0, outputs=output0)
+    model = Model(inputs=input0, outputs=[final])
 
     return model
 

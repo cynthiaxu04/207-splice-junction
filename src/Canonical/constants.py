@@ -7,10 +7,10 @@ SL=5000
 # Sequence length of SpliceAIs (SL+CL will be the input length and
 # SL will be the output length)
 
-splice_table='./Canonical/data/canonical_dataset.txt'
-ref_genome='./data/hg19.fa'
+splice_table='canonical_dataset.txt'
+ref_genome='../data/hg19.fa'
 # Input details
 
-data_dir='./Canonical/data/'
-sequence='./Canonical/data/canonical_sequence.txt'
+data_dir='../data/'
+sequence='canonical_sequence.txt'
 # Output details

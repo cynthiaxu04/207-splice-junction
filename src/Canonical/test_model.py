@@ -1,12 +1,12 @@
 ###############################################################################
-# This file contains src to test the SpliceAI model.
+# This file contains code to test the SpliceAI model.
 ###############################################################################
 
 import numpy as np
 import sys
 import time
 import h5py
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from utils import *
 from constants import *
 
@@ -73,7 +73,7 @@ for output_class in [1, 2]:
             Y_true[t].extend(Yc[t][is_expr, :, output_class].flatten())
             Y_pred[t].extend(Yps[t][is_expr, :, output_class].flatten())
 
-    print "\n\033[1m%s:\033[0m" % (output_class_labels[output_class])
+    print("\n\033[1m%s:\033[0m" % (output_class_labels[output_class]))
 
     for t in range(1):
 
@@ -85,8 +85,8 @@ for output_class in [1, 2]:
 
 h5f.close()
 
-print "--- %s seconds ---" % (time.time() - start_time)
-print "--------------------------------------------------------------"
+print("--- %s seconds ---" % (time.time() - start_time))
+print("--------------------------------------------------------------")
 
 ###############################################################################
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# This file contains the src to train the SpliceAI model.
+# This file contains the code to train the SpliceAI model.
 ###############################################################################
 
 import numpy as np
@@ -20,7 +20,7 @@ assert int(sys.argv[1]) in [80, 400, 2000, 10000]
 ###############################################################################
 
 L = 32
-N_GPUS = 2
+N_GPUS = 1
 
 if int(sys.argv[1]) == 80:
     W = np.asarray([11, 11, 11, 11])
@@ -41,7 +41,8 @@ elif int(sys.argv[1]) == 10000:
                     21, 21, 21, 21, 41, 41, 41, 41])
     AR = np.asarray([1, 1, 1, 1, 4, 4, 4, 4,
                      10, 10, 10, 10, 25, 25, 25, 25])
-    BATCH_SIZE = 6*N_GPUS
+    #BATCH_SIZE = 6*N_GPUS
+    BATCH_SIZE = 12
 # Hyper-parameters:
 # L: Number of convolution kernels
 # W: Convolution window size in each residual unit
@@ -49,8 +50,8 @@ elif int(sys.argv[1]) == 10000:
 
 CL = 2 * np.sum(AR*(W-1))
 assert CL <= CL_max and CL == int(sys.argv[1])
-print "\033[1mContext nucleotides: %d\033[0m" % (CL)
-print "\033[1mSequence length (output): %d\033[0m" % (SL)
+print("\033[1mContext nucleotides: %d\033[0m" % (CL))
+print("\033[1mSequence length (output): %d\033[0m" % (SL))
 
 model = SpliceAI(L, W, AR)
 model.summary()
@@ -88,8 +89,8 @@ for epoch_num in range(EPOCH_NUM):
     if (epoch_num+1) % len(idx_train) == 0:
         # Printing metrics (see utils.py for details)
 
-        print "--------------------------------------------------------------"
-        print "\n\033[1mValidation set metrics:\033[0m"
+        print("--------------------------------------------------------------")
+        print("\n\033[1mValidation set metrics:\033[0m")
 
         Y_true_1 = [[] for t in range(1)]
         Y_true_2 = [[] for t in range(1)]
@@ -116,17 +117,17 @@ for epoch_num in range(EPOCH_NUM):
                 Y_pred_1[t].extend(Yp[t][is_expr, :, 1].flatten())
                 Y_pred_2[t].extend(Yp[t][is_expr, :, 2].flatten())
 
-        print "\n\033[1mAcceptor:\033[0m"
+        print("\n\033[1mAcceptor:\033[0m")
         for t in range(1):
             print_topl_statistics(np.asarray(Y_true_1[t]),
                                   np.asarray(Y_pred_1[t]))
 
-        print "\n\033[1mDonor:\033[0m"
+        print("\n\033[1mDonor:\033[0m")
         for t in range(1):
             print_topl_statistics(np.asarray(Y_true_2[t]),
                                   np.asarray(Y_pred_2[t]))
 
-        print "\n\033[1mTraining set metrics:\033[0m"
+        print("\n\033[1mTraining set metrics:\033[0m")
 
         Y_true_1 = [[] for t in range(1)]
         Y_true_2 = [[] for t in range(1)]
@@ -153,21 +154,21 @@ for epoch_num in range(EPOCH_NUM):
                 Y_pred_1[t].extend(Yp[t][is_expr, :, 1].flatten())
                 Y_pred_2[t].extend(Yp[t][is_expr, :, 2].flatten())
 
-        print "\n\033[1mAcceptor:\033[0m"
+        print("\n\033[1mAcceptor:\033[0m")
         for t in range(1):
             print_topl_statistics(np.asarray(Y_true_1[t]),
                                   np.asarray(Y_pred_1[t]))
 
-        print "\n\033[1mDonor:\033[0m"
+        print("\n\033[1mDonor:\033[0m")
         for t in range(1):
             print_topl_statistics(np.asarray(Y_true_2[t]),
                                   np.asarray(Y_pred_2[t]))
 
-        print "Learning rate: %.5f" % (kb.get_value(model_m.optimizer.lr))
-        print "--- %s seconds ---" % (time.time() - start_time)
+        print("Learning rate: %.5f" % (kb.get_value(model_m.optimizer.lr)))
+        print("--- %s seconds ---" % (time.time() - start_time))
         start_time = time.time()
 
-        print "--------------------------------------------------------------"
+        print("--------------------------------------------------------------")
 
         model.save('./Models/SpliceAI' + sys.argv[1]
                    + '_c' + sys.argv[2] + '.h5')
@@ -181,3 +182,4 @@ h5f.close()
         
 ###############################################################################
 
+"""

@@ -1,7 +1,7 @@
-from keras.layers import Input
-from keras.layers.merge import concatenate
-from keras.layers.core import Lambda
-from keras.models import Model
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import concatenate
+from tensorflow.keras.layers import Lambda
+from tensorflow.keras.models import Model
 import tensorflow as tf
 
 
@@ -49,6 +49,9 @@ def make_parallel(model, gpu_count):
         
         merged = []
         for outputs in outputs_all:
-            merged.append(concatenate(outputs, axis=0))
+            if len(outputs) == 1:
+                merged.append(outputs[0])
+            else:
+                merged.append(concatenate(outputs, axis=0))
             
         return Model(inputs=model.inputs, outputs=merged)
