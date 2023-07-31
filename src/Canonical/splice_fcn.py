@@ -1,7 +1,7 @@
 ###############################################################################
 # This file has the functions necessary to create the SpliceAI model.
 ###############################################################################
-
+import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input
 from tensorflow.keras.layers import Activation
@@ -64,6 +64,6 @@ def SpliceAI(L, W, AR):
 def categorical_crossentropy_2d(y_true, y_pred):
     # Standard categorical cross entropy for sequence outputs
 
-    return - kb.mean(y_true[:, :, 0]*kb.log(y_pred[:, :, 0]+1e-10)
-                   + y_true[:, :, 1]*kb.log(y_pred[:, :, 1]+1e-10)
-                   + y_true[:, :, 2]*kb.log(y_pred[:, :, 2]+1e-10))
+    return - kb.mean(tf.cast(y_true[:, :, 0], 'float32')*kb.log(y_pred[:, :, 0])#+1e-10)
+                   + tf.cast(y_true[:, :, 1], 'float32')*kb.log(y_pred[:, :, 1])#+1e-10)
+                   + tf.cast(y_true[:, :, 2], 'float32')*kb.log(y_pred[:, :, 2]))#+1e-10))

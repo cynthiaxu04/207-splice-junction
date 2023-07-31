@@ -8,11 +8,10 @@ import time
 import h5py
 import keras.backend as kb
 import tensorflow as tf
-from spliceai import *
+from splice_fcn import *
 from utils import *
 from multi_gpu import *
-from constants import * 
-
+from constants import *
 assert int(sys.argv[1]) in [80, 400, 2000, 10000]
 
 ###############################################################################
@@ -42,7 +41,7 @@ elif int(sys.argv[1]) == 10000:
     AR = np.asarray([1, 1, 1, 1, 4, 4, 4, 4,
                      10, 10, 10, 10, 25, 25, 25, 25])
     #BATCH_SIZE = 6*N_GPUS
-    BATCH_SIZE = 12
+    BATCH_SIZE = 6
 # Hyper-parameters:
 # L: Number of convolution kernels
 # W: Convolution window size in each residual unit
@@ -76,7 +75,7 @@ start_time = time.time()
 
 
 for epoch_num in range(EPOCH_NUM):
-
+    print(f'epoch num {epoch_num}')
     idx = np.random.choice(idx_train)
 
     X = h5f['X' + str(idx)][:]
@@ -86,7 +85,7 @@ for epoch_num in range(EPOCH_NUM):
     model_m.fit(Xc, Yc, batch_size=BATCH_SIZE, verbose=0)
 
 
-    if (epoch_num+1) % len(idx_train) == 0:
+    if (epoch_num+1) % len(idx_train) == 40:
         # Printing metrics (see utils.py for details)
 
         print("--------------------------------------------------------------")
@@ -179,7 +178,6 @@ for epoch_num in range(EPOCH_NUM):
             # Learning rate decay
 
 h5f.close()
-        
+import gc
+gc.collect()
 ###############################################################################
-
-"""
